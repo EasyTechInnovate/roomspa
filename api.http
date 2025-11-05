@@ -219,6 +219,7 @@ Content-Type: application/json
 #     "usage_limit": 1000,
 #     "used_count": 0,
 #     "is_active": true,
+
 #     "valid_from": "2024-01-01T00:00:00Z",
 #     "valid_until": "2024-12-31T23:59:59Z",
 #     "created_at": "2025-10-30T07:11:05.238093Z"
