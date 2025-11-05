@@ -22,11 +22,11 @@ jobs:
 
       - name: Deploy to Server
         env:
-          DEPLOY_PATH: /home/RoomSpa
+          DEPLOY_PATH: /home/roomspa
           DEPLOY_HOST: 45.13.132.251
           DEPLOY_USER: root
-          GITHUB_USERNAME: RitikChahar
-          GITHUB_REPO: RoomSpa
+          GITHUB_USERNAME: EasyTechInnovate
+          GITHUB_REPO: roomspa
           GITHUB_TOKEN: ${{ secrets.DEPLOY_GITHUB_TOKEN }}
         run: |
           # Pass environment variables to the SSH session
