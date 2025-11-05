@@ -1,0 +1,764 @@
+# =================== ADMIN PANEL API DOCUMENTATION ===================
+# Complete and Accurate API Documentation for RoomSpa Admin Panel
+# Based on actual URLs from admin_panel/urls.py
+
+# IMPORTANT: Simple Token Authentication
+# 1. Call login endpoint to get the simple token
+# 2. Use the "token" from login response in all subsequent requests
+# 3. Token is already set below: admin-simple-token-2024
+#
+# RECENT FIXES APPLIED:
+# ✅ Fixed PostgreSQL MAX function issue in users endpoint
+# ✅ Fixed pending requests model fields (removed non-existent customer_phone, address)
+# ✅ All endpoints now use SimpleAdminAuthentication (bypasses JWT)
+# ✅ Updated sample responses to match actual API responses
+
+# Variables
+@baseUrl = https://spa.manishdashsharma.site/admin_panel
+@token = admin-simple-token-2024
+
+# =================== AUTHENTICATION APIs ===================
+
+### 1. Admin Login
+POST {{baseUrl}}/api/auth/login/
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "admin@1234"
+}
+
+### 2. Admin Logout
+POST {{baseUrl}}/api/auth/logout/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{}
+
+# =================== DASHBOARD APIs ===================
+
+### 3. Dashboard Overview - Complete admin dashboard with all metrics
+GET {{baseUrl}}/api/dashboard/
+Authorization: Bearer {{token}}
+
+# =================== USER MANAGEMENT APIs ===================
+
+### 4. List All Users - Paginated user list with filters
+GET {{baseUrl}}/api/users/
+Authorization: Bearer {{token}}
+
+### 5. List Users with Filters - Search and filter users
+GET {{baseUrl}}/api/users/?page=1&per_page=20&role=customer&search=john&verified=true
+Authorization: Bearer {{token}}
+
+### 6. Get User Details - Detailed user information with role-specific data
+GET {{baseUrl}}/api/users/1/
+Authorization: Bearer {{token}}
+
+### 7. User Action - Activate User
+POST {{baseUrl}}/api/users/1/action/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "action": "activate"
+}
+
+### 8. User Action - Deactivate User
+POST {{baseUrl}}/api/users/1/action/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "action": "deactivate"
+}
+
+### 9. User Action - Verify User
+POST {{baseUrl}}/api/users/1/action/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "action": "verify"
+}
+
+### 10. User Action - Unverify User
+POST {{baseUrl}}/api/users/1/action/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "action": "unverify"
+}
+
+### 11. User Action - Delete User
+POST {{baseUrl}}/api/users/1/action/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "action": "delete"
+}
+
+# =================== BOOKING MANAGEMENT APIs ===================
+
+### 12. List All Bookings - Comprehensive bookings list with filters
+GET {{baseUrl}}/api/bookings/
+Authorization: Bearer {{token}}
+
+### 13. List Bookings with Filters - Search and filter bookings
+GET {{baseUrl}}/api/bookings/?page=1&per_page=20&status=active&search=john&date_from=2024-01-01&date_to=2024-12-31
+Authorization: Bearer {{token}}
+
+### 14. Get Booking Details - Detailed booking information
+GET {{baseUrl}}/api/bookings/123e4567-e89b-12d3-a456-426614174000/
+Authorization: Bearer {{token}}
+
+### 15. Booking Action - Cancel Booking
+POST {{baseUrl}}/api/bookings/123e4567-e89b-12d3-a456-426614174000/action/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "action": "cancel",
+  "reason": "Customer request"
+}
+
+### 16. Booking Action - Complete Booking
+POST {{baseUrl}}/api/bookings/123e4567-e89b-12d3-a456-426614174000/action/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "action": "complete"
+}
+
+### 17. Booking Action - Start Booking
+POST {{baseUrl}}/api/bookings/123e4567-e89b-12d3-a456-426614174000/action/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "action": "start"
+}
+
+# =================== ANALYTICS APIs ===================
+
+### 18. Booking Analytics - Comprehensive booking analytics and trends
+GET {{baseUrl}}/api/analytics/bookings/
+Authorization: Bearer {{token}}
+
+### 19. Booking Analytics with Custom Period - 7 days
+GET {{baseUrl}}/api/analytics/bookings/?period=7
+Authorization: Bearer {{token}}
+
+### 20. Booking Analytics with Extended Period - 90 days
+GET {{baseUrl}}/api/analytics/bookings/?period=90
+Authorization: Bearer {{token}}
+
+### 21. Therapist Analytics - Therapist performance and analytics
+GET {{baseUrl}}/api/analytics/therapists/
+Authorization: Bearer {{token}}
+
+### 22. Advanced Analytics - Geographic and service analytics
+GET {{baseUrl}}/api/analytics/advanced/
+Authorization: Bearer {{token}}
+
+### 23. Advanced Analytics with Custom Period
+GET {{baseUrl}}/api/analytics/advanced/?period=60
+Authorization: Bearer {{token}}
+
+# =================== FINANCIAL REPORTS APIs ===================
+
+### 24. Financial Reports - Default (monthly)
+GET {{baseUrl}}/api/reports/financial/
+Authorization: Bearer {{token}}
+
+### 25. Financial Reports - Weekly
+GET {{baseUrl}}/api/reports/financial/?period=week
+Authorization: Bearer {{token}}
+
+### 26. Financial Reports - Monthly
+GET {{baseUrl}}/api/reports/financial/?period=month
+Authorization: Bearer {{token}}
+
+### 27. Financial Reports - Quarterly
+GET {{baseUrl}}/api/reports/financial/?period=quarter
+Authorization: Bearer {{token}}
+
+### 28. Financial Reports - Yearly
+GET {{baseUrl}}/api/reports/financial/?period=year
+Authorization: Bearer {{token}}
+
+# =================== LIVE MONITORING APIs ===================
+
+### 29. Live System Monitoring - Real-time system monitoring dashboard
+GET {{baseUrl}}/api/monitoring/
+Authorization: Bearer {{token}}
+
+# =================== SYSTEM HEALTH APIs ===================
+
+### 30. System Health Check - System health monitoring and performance
+GET {{baseUrl}}/api/system/health/
+Authorization: Bearer {{token}}
+
+# =================== THERAPIST MANAGEMENT APIs ===================
+
+### 31. List All Therapists - Therapists with performance metrics
+GET {{baseUrl}}/api/therapists/
+Authorization: Bearer {{token}}
+
+### 32. List Therapists with Filters - Filter by status and verification
+GET {{baseUrl}}/api/therapists/?page=1&per_page=20&status=available&verified=true
+Authorization: Bearer {{token}}
+
+### 33. Therapist Action - Approve Therapist
+POST {{baseUrl}}/api/therapists/1/action/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "action": "approve"
+}
+
+### 34. Therapist Action - Reject Therapist
+POST {{baseUrl}}/api/therapists/1/action/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "action": "reject"
+}
+
+### 35. Therapist Action - Suspend Therapist
+POST {{baseUrl}}/api/therapists/1/action/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "action": "suspend"
+}
+
+### 36. Therapist Action - Reactivate Therapist
+POST {{baseUrl}}/api/therapists/1/action/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "action": "reactivate"
+}
+
+# =================== CUSTOMER MANAGEMENT APIs ===================
+
+### 37. List All Customers - Customers with booking history
+GET {{baseUrl}}/api/customers/
+Authorization: Bearer {{token}}
+
+### 38. List Customers with Search - Search customers by name, email, phone
+GET {{baseUrl}}/api/customers/?page=1&per_page=20&search=jane
+Authorization: Bearer {{token}}
+
+# =================== PENDING REQUESTS MANAGEMENT APIs ===================
+
+### 39. List Pending Requests - All pending booking requests
+GET {{baseUrl}}/api/pending-requests/
+Authorization: Bearer {{token}}
+
+### 40. List Pending Requests with Filter - Filter by status
+GET {{baseUrl}}/api/pending-requests/?page=1&per_page=20&status=pending
+Authorization: Bearer {{token}}
+
+### 41. Pending Request Action - Approve Request
+POST {{baseUrl}}/api/pending-requests/123e4567-e89b-12d3-a456-426614174000/action/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "action": "approve"
+}
+
+### 42. Pending Request Action - Reject Request
+POST {{baseUrl}}/api/pending-requests/123e4567-e89b-12d3-a456-426614174000/action/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "action": "reject"
+}
+
+### 43. Pending Request Action - Cancel Request
+POST {{baseUrl}}/api/pending-requests/123e4567-e89b-12d3-a456-426614174000/action/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "action": "cancel"
+}
+
+# =================== CHAT/COMMUNICATION MANAGEMENT APIs ===================
+
+### 44. List All Conversations - Conversations with message counts
+GET {{baseUrl}}/api/conversations/
+Authorization: Bearer {{token}}
+
+### 45. List Conversations with Pagination
+GET {{baseUrl}}/api/conversations/?page=1&per_page=20
+Authorization: Bearer {{token}}
+
+### 46. Get Conversation Messages - Messages for specific conversation
+GET {{baseUrl}}/api/conversations/123e4567-e89b-12d3-a456-426614174000/messages/
+Authorization: Bearer {{token}}
+
+### 47. Get Conversation Messages with Pagination
+GET {{baseUrl}}/api/conversations/123e4567-e89b-12d3-a456-426614174000/messages/?page=1&per_page=50
+Authorization: Bearer {{token}}
+
+# =================== EXPORT AND REPORTING APIs ===================
+
+### 48. Export Bookings Data - Default bookings export
+GET {{baseUrl}}/api/export/?type=bookings
+Authorization: Bearer {{token}}
+
+### 49. Export Bookings Data with Date Range
+GET {{baseUrl}}/api/export/?type=bookings&date_from=2024-01-01&date_to=2024-12-31
+Authorization: Bearer {{token}}
+
+### 50. Export Users Data
+GET {{baseUrl}}/api/export/?type=users
+Authorization: Bearer {{token}}
+
+### 51. Export Users Data with Date Range
+GET {{baseUrl}}/api/export/?type=users&date_from=2024-01-01&date_to=2024-12-31
+Authorization: Bearer {{token}}
+
+### 52. Export Revenue Data
+GET {{baseUrl}}/api/export/?type=revenue
+Authorization: Bearer {{token}}
+
+### 53. Export Revenue Data with Date Range
+GET {{baseUrl}}/api/export/?type=revenue&date_from=2024-01-01&date_to=2024-12-31
+Authorization: Bearer {{token}}
+
+# =================== NOTIFICATION MANAGEMENT APIs ===================
+
+### 54. List FCM Tokens - All push notification tokens
+GET {{baseUrl}}/api/notifications/tokens/
+Authorization: Bearer {{token}}
+
+### 55. Send Notification to All Users
+POST {{baseUrl}}/api/notifications/send/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "System Announcement",
+  "message": "Scheduled maintenance will begin at 2 AM",
+  "user_type": "all"
+}
+
+### 56. Send Notification to Customers Only
+POST {{baseUrl}}/api/notifications/send/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Special Offer",
+  "message": "Get 20% off your next booking!",
+  "user_type": "customers"
+}
+
+### 57. Send Notification to Therapists Only
+POST {{baseUrl}}/api/notifications/send/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "New Policy Update",
+  "message": "Please review the updated terms and conditions",
+  "user_type": "therapists"
+}
+
+# =================== COMPLETE URL MAPPING ===================
+# Based on admin_panel/urls.py - 24 Unique Endpoints:
+
+# 1. api/auth/login/ (POST) → admin_login_api
+# 2. api/auth/logout/ (POST) → admin_logout_api
+# 3. api/dashboard/ (GET) → dashboard_overview_api
+# 4. api/users/ (GET) → users_list_api
+# 5. api/users/<int:user_id>/ (GET) → user_detail_api
+# 6. api/users/<int:user_id>/action/ (POST) → user_action_api
+# 7. api/bookings/ (GET) → bookings_list_api
+# 8. api/bookings/<uuid:booking_id>/ (GET) → booking_detail_api
+# 9. api/bookings/<uuid:booking_id>/action/ (POST) → booking_action_api
+# 10. api/analytics/bookings/ (GET) → booking_analytics_api
+# 11. api/analytics/therapists/ (GET) → therapist_analytics_api
+# 12. api/analytics/advanced/ (GET) → advanced_analytics_api
+# 13. api/reports/financial/ (GET) → financial_reports_api
+# 14. api/monitoring/ (GET) → live_monitoring_api
+# 15. api/system/health/ (GET) → system_health_api
+# 16. api/therapists/ (GET) → therapist_list_api
+# 17. api/therapists/<int:therapist_id>/action/ (POST) → therapist_action_api
+# 18. api/customers/ (GET) → customer_list_api
+# 19. api/pending-requests/ (GET) → pending_requests_api
+# 20. api/pending-requests/<uuid:request_id>/action/ (POST) → pending_request_action_api
+# 21. api/conversations/ (GET) → conversations_api
+# 22. api/conversations/<uuid:conversation_id>/messages/ (GET) → conversation_messages_api
+# 23. api/export/ (GET) → export_data_api
+# 24. api/notifications/tokens/ (GET) → fcm_tokens_api
+# 25. api/notifications/send/ (POST) → send_notification_api
+
+# =================== SAMPLE RESPONSES ===================
+
+### Login Response
+# {
+#   "success": true,
+#   "message": "Admin login successful",
+#   "token": "admin-simple-token-2024",
+#   "user": {
+#     "id": "admin-001",
+#     "name": "Admin User",
+#     "email": "admin@gmail.com",
+#     "role": "admin"
+#   }
+# }
+
+### Dashboard Response Sample
+# {
+#   "success": true,
+#   "data": {
+#     "users": {
+#       "total": 150,
+#       "customers": 120,
+#       "therapists": 25,
+#       "admins": 5,
+#       "new_today": 3,
+#       "new_this_week": 12,
+#       "verified": 140,
+#       "unverified": 10
+#     },
+#     "bookings": {
+#       "total": 450,
+#       "active": 12,
+#       "completed": 380,
+#       "pending": 35,
+#       "cancelled": 23,
+#       "started": 5,
+#       "today": 8,
+#       "this_week": 45
+#     },
+#     "revenue": {
+#       "today": 1250.50,
+#       "this_week": 8900.75,
+#       "this_month": 35400.25,
+#       "avg_booking_value": 78.50
+#     },
+#     "therapists": {
+#       "total": 25,
+#       "available": 18,
+#       "unavailable": 7,
+#       "verified": 22,
+#       "with_services": 20,
+#       "with_addresses": 23
+#     },
+#     "system": {
+#       "pending_requests": 5,
+#       "old_pending_requests": 1,
+#       "total_conversations": 89,
+#       "active_conversations": 23,
+#       "unread_messages": 12,
+#       "fcm_tokens": 145
+#     },
+#     "alerts": [
+#       {
+#         "type": "warning",
+#         "message": "High cancellation rate today: 15.2%"
+#       }
+#     ],
+#     "last_updated": "2024-01-15 14:30:25"
+#   }
+# }
+
+### Users List Response Sample
+# {
+#   "success": true,
+#   "data": {
+#     "users": [
+#       {
+#         "id": 1,
+#         "name": "John Doe",
+#         "email": "john@example.com",
+#         "phone_number": "+1234567890",
+#         "role": "customer",
+#         "verification_status": true,
+#         "is_active": true,
+#         "date_created": "2024-01-10 09:15:30",
+#         "gender": "male",
+#         "booking_count": 5,
+#         "last_activity": "2024-01-14 16:20:15",
+#         "total_spent": 420.75
+#       }
+#     ],
+#     "pagination": {
+#       "current_page": 1,
+#       "total_pages": 8,
+#       "total_count": 150,
+#       "has_next": true,
+#       "has_previous": false
+#     }
+#   }
+# }
+
+### Booking Detail Response Sample
+# {
+#   "success": true,
+#   "data": {
+#     "id": "123e4567-e89b-12d3-a456-426614174000",
+#     "status": "completed",
+#     "total": 85.00,
+#     "services": {
+#       "massage": {
+#         "name": "Swedish Massage",
+#         "duration": 60,
+#         "price": 85.00
+#       }
+#     },
+#     "customer": {
+#       "id": 1,
+#       "name": "John Doe",
+#       "email": "john@example.com",
+#       "phone_number": "+1234567890"
+#     },
+#     "therapist": {
+#       "id": 2,
+#       "name": "Jane Smith",
+#       "email": "jane@example.com",
+#       "phone_number": "+1234567891"
+#     },
+#     "schedule": {
+#       "time_slot_from": "2024-01-15 14:00:00",
+#       "time_slot_to": "2024-01-15 15:00:00"
+#     },
+#     "location": {
+#       "address": "123 Main St, City, State",
+#       "latitude": 40.7128,
+#       "longitude": -74.0060,
+#       "distance": 2.5
+#     },
+#     "timeline": {
+#       "created_at": "2024-01-14 10:30:00",
+#       "started_at": "2024-01-15 14:00:00",
+#       "completed_at": "2024-01-15 15:00:00",
+#       "cancelled_at": null
+#     },
+#     "cancellation_reason": null
+#   }
+# }
+
+### Analytics Response Sample
+# {
+#   "success": true,
+#   "data": {
+#     "period_days": 30,
+#     "date_range": {
+#       "start": "2023-12-16",
+#       "end": "2024-01-15"
+#     },
+#     "daily_trends": [
+#       {
+#         "date": "2024-01-15",
+#         "bookings": 8,
+#         "completed": 6,
+#         "cancelled": 1,
+#         "revenue": 510.00
+#       }
+#     ],
+#     "status_distribution": [
+#       {"status": "completed", "count": 380},
+#       {"status": "active", "count": 12}
+#     ],
+#     "top_therapists": [
+#       {
+#         "therapist__name": "Jane Smith",
+#         "therapist__email": "jane@example.com",
+#         "therapist__id": 2,
+#         "bookings": 25,
+#         "revenue": 2100.50,
+#         "success_rate": 92.0
+#       }
+#     ],
+#     "financial_summary": {
+#       "total_bookings": 450,
+#       "total_revenue": 35400.25,
+#       "avg_booking_value": 78.67,
+#       "completion_rate": 84.4
+#     }
+#   }
+# }
+
+### Error Response
+# {
+#   "success": false,
+#   "error": "User not found"
+# }
+
+### Action Success Response
+# {
+#   "success": true,
+#   "message": "User John Doe activated successfully"
+# }
+
+### Pending Requests Response Sample
+# {
+#   "success": true,
+#   "data": {
+#     "requests": [
+#       {
+#         "id": "123e4567-e89b-12d3-a456-426614174000",
+#         "customer_id": "user-456",
+#         "customer_name": "John Doe",
+#         "therapist_id": "therapist-789",
+#         "services": "Swedish Massage, Deep Tissue",
+#         "timeslot_from": "2024-01-15 14:00:00",
+#         "timeslot_to": "2024-01-15 15:30:00",
+#         "latitude": 40.7128,
+#         "longitude": -74.0060,
+#         "distance": 2.5,
+#         "status": "pending",
+#         "created_at": "2024-01-14 10:30:00",
+#         "time_ago": "1 day, 3:30:00"
+#       }
+#     ],
+#     "pagination": {
+#       "current_page": 1,
+#       "total_pages": 3,
+#       "total_count": 45,
+#       "has_next": true,
+#       "has_previous": false
+#     }
+#   }
+# }
+
+### Users List Response Sample (Updated)
+# {
+#   "success": true,
+#   "data": {
+#     "users": [
+#       {
+#         "id": 1,
+#         "name": "John Doe",
+#         "email": "john@example.com",
+#         "phone_number": "+1234567890",
+#         "role": "customer",
+#         "verification_status": true,
+#         "is_active": true,
+#         "date_created": "2024-01-10 09:15:30",
+#         "gender": "male",
+#         "booking_count": 5,
+#         "last_activity": "2024-01-14 16:20:15",
+#         "total_spent": 420.75
+#       }
+#     ],
+#     "pagination": {
+#       "current_page": 1,
+#       "total_pages": 8,
+#       "total_count": 150,
+#       "has_next": true,
+#       "has_previous": false
+#     }
+#   }
+# }
+
+# =================== FRONTEND INTEGRATION ===================
+
+### React/Next.js Example
+# const API_BASE_URL = 'http://localhost:8000/admin-panel/api';
+#
+# // Login and store token
+# const login = async (email, password) => {
+#   const response = await fetch(`${API_BASE_URL}/auth/login/`, {
+#     method: 'POST',
+#     headers: { 'Content-Type': 'application/json' },
+#     body: JSON.stringify({ email, password })
+#   });
+#   const data = await response.json();
+#   if (data.success) {
+#     localStorage.setItem('adminToken', data.token);
+#     return data;
+#   }
+#   throw new Error(data.error);
+# };
+#
+# // API helper with authentication
+# const apiCall = async (endpoint, options = {}) => {
+#   const token = localStorage.getItem('adminToken');
+#   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+#     ...options,
+#     headers: {
+#       'Authorization': `Bearer ${token}`,
+#       'Content-Type': 'application/json',
+#       ...options.headers
+#     }
+#   });
+#   return await response.json();
+# };
+#
+# // Usage examples
+# const dashboard = await apiCall('/dashboard/');
+# const users = await apiCall('/users/?page=1&per_page=20');
+# const userAction = await apiCall('/users/1/action/', {
+#   method: 'POST',
+#   body: JSON.stringify({ action: 'activate' })
+# });
+
+### Axios Configuration
+# import axios from 'axios';
+#
+# const api = axios.create({
+#   baseURL: 'http://localhost:8000/admin-panel/api/',
+#   headers: { 'Content-Type': 'application/json' }
+# });
+#
+# // Token interceptor
+# api.interceptors.request.use((config) => {
+#   const token = localStorage.getItem('adminToken');
+#   if (token) config.headers.Authorization = `Bearer ${token}`;
+#   return config;
+# });
+#
+# // Error handling
+# api.interceptors.response.use(
+#   (response) => response,
+#   (error) => {
+#     if (error.response?.status === 401) {
+#       localStorage.removeItem('adminToken');
+#       window.location.href = '/admin/login';
+#     }
+#     return Promise.reject(error);
+#   }
+# );
+
+# =================== TESTING WORKFLOW ===================
+# 1. Start with login to get token
+# 2. Test dashboard to verify authentication
+# 3. Test user management endpoints
+# 4. Test booking management
+# 5. Test analytics and reports
+# 6. Test action endpoints with valid IDs
+# 7. Test error scenarios
+
+# =================== TROUBLESHOOTING ===================
+# If you get errors:
+#
+# 1. "Admin authentication required"
+#    → Make sure you're using: Authorization: Bearer admin-simple-token-2024
+#
+# 2. "Given token not valid for any token type"
+#    → This means JWT is still being used somewhere - should be fixed now
+#
+# 3. "object has no attribute 'field_name'"
+#    → Model field doesn't exist - check actual model structure
+#
+# 4. "function max() does not exist"
+#    → PostgreSQL query issue - should be fixed now
+#
+# All endpoints should work with the simple token authentication!

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoomSpa Account Registration</title>
+</head>
+
+<body
+    style="background-color: #121212; color: #ffffff; font-family: Arial, sans-serif; text-align: center; padding: 20px;">
+
+    <h1>Welcome to RoomSpa!</h1>
+    <p style="margin-bottom: 20px;">
+        Hello {{ username }}, thank you for joining RoomSpa. You are just one step away from automating your outreach
+        and improving engagement across multiple platforms.
+    </p>
+    <p style="margin-bottom: 20px;">
+        Please use the following One-Time Password (OTP) to verify your account:
+    </p>
+    <p
+        style="font-size: 24px; font-weight: bold; letter-spacing: 2px; background-color: #1e1e1e; padding: 10px; border-radius: 5px; display: inline-block;">
+        {{ registration_link }}
+    </p>
+    <p style="margin-top: 20px;">
+        Enter this code in the verification page to complete your registration.
+    </p>
+    <div style="margin-top: 50px; font-style: italic;">
+        <p>Regards,<br>RoomSpa Team</p>
+    </div>
+</body>
+
+</html>

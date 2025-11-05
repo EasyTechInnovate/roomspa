@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  server:
+    container_name: server
+    build:
+      context: .
+      dockerfile: docker/development/Dockerfile
+    command: /app/entrypoint.sh
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/mediafiles
+    env_file:
+      - .env.development
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - cache
+    networks:
+      - app-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  cache:
+    container_name: cache
+    image: redis:latest
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - cache:/data
+    networks:
+      - app-network
+
+
+  db:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env.development
+    restart: always
+    networks:
+      - app-network
+
+  # kafka:
+  #   image: bitnami/kafka:3.7
+  #   environment:
+  #     - KAFKA_BROKER_ID=1
+  #     - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+  #     - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+  #     - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+  #     - ALLOW_PLAINTEXT_LISTENER=yes
+  #   depends_on:
+  #     - zookeeper
+  #   ports:
+  #     - "9092:9092"
+  #   networks:
+  #     - app-network
+
+  # zookeeper:
+  #   image: bitnami/zookeeper:3.9
+  #   environment:
+  #     - ALLOW_ANONYMOUS_LOGIN=yes
+  #   ports:
+  #     - "2181:2181"
+  #   networks:
+  #     - app-network
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+  cache:
+
+networks:
+  app-network:
+    driver: bridge

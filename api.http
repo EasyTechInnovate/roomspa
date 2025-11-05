@@ -1,0 +1,368 @@
+# RoomSpa Coupon System API Documentation
+# =============================================
+
+@base_url = https://spa.manishdashsharma.site
+@admin_token = admin-simple-token-2024
+@access_token = YOUR_ACCESS_TOKEN_HERE
+
+# =================== ADMIN COUPON MANAGEMENT APIS ===================
+
+### Admin Login (Required for Coupon Management)
+POST {{base_url}}/admin_panel/api/auth/login/
+Content-Type: application/json
+
+{
+    "email": "admin@gmail.com",
+    "password": "admin@1234"
+}
+
+### List All Coupons (Admin)
+GET {{base_url}}/admin_panel/api/coupons/?page=1&page_size=10
+Authorization: {{admin_token}}
+
+### Search Coupons (Admin)
+GET {{base_url}}/admin_panel/api/coupons/?search=SAVE&is_active=true
+Authorization: {{admin_token}}
+
+### Create New Coupon (Admin) - Percentage Discount
+POST {{base_url}}/admin_panel/api/coupons/create/
+Authorization: {{admin_token}}
+Content-Type: application/json
+
+{
+    "code": "WELCOME10",
+    "name": "Welcome Discount",
+    "description": "10% off for new customers",
+    "discount_type": "percentage",
+    "discount_value": 10,
+    "minimum_order_amount": 0,
+    "maximum_discount_amount": 100,
+    "usage_limit": 1000,
+    "is_active": true,
+    "valid_from": "2024-01-01T00:00:00Z",
+    "valid_until": "2024-12-31T23:59:59Z"
+}
+
+### Create Fixed Amount Coupon (Admin)
+POST {{base_url}}/admin_panel/api/coupons/create/
+Authorization: {{admin_token}}
+Content-Type: application/json
+
+{
+    "code": "FLAT100",
+    "name": "Flat ₹100 Off",
+    "description": "Flat ₹100 discount on orders above ₹800",
+    "discount_type": "fixed",
+    "discount_value": 100,
+    "minimum_order_amount": 800,
+    "usage_limit": 200,
+    "is_active": true,
+    "valid_from": "2024-01-01T00:00:00Z",
+    "valid_until": "2024-12-31T23:59:59Z"
+}
+
+### Create Premium Coupon (Admin)
+POST {{base_url}}/admin_panel/api/coupons/create/
+Authorization: {{admin_token}}
+Content-Type: application/json
+
+{
+    "code": "PREMIUM30",
+    "name": "Premium 30% Off",
+    "description": "Exclusive 30% discount for premium customers",
+    "discount_type": "percentage",
+    "discount_value": 30,
+    "minimum_order_amount": 1500,
+    "maximum_discount_amount": 500,
+    "usage_limit": 25,
+    "is_active": true,
+    "valid_from": "2024-01-01T00:00:00Z",
+    "valid_until": "2024-12-31T23:59:59Z"
+}
+
+### Get Coupon Details (Admin)
+GET {{base_url}}/admin_panel/api/coupons/f3ce88d3-27ad-4a93-a743-3ef2940b8ffb/
+Authorization: {{admin_token}}
+
+### Update Coupon (Admin)
+PUT {{base_url}}/admin_panel/api/coupons/f3ce88d3-27ad-4a93-a743-3ef2940b8ffb/update/
+Authorization: {{admin_token}}
+Content-Type: application/json
+
+{
+    "name": "Updated Premium 35% Off",
+    "discount_value": 35,
+    "description": "Updated premium discount"
+}
+
+### Toggle Coupon Status (Admin) - Activate/Deactivate
+POST {{base_url}}/admin_panel/api/coupons/f3ce88d3-27ad-4a93-a743-3ef2940b8ffb/toggle-status/
+Authorization: {{admin_token}}
+
+### Delete Coupon (Admin)
+DELETE {{base_url}}/admin_panel/api/coupons/f3ce88d3-27ad-4a93-a743-3ef2940b8ffb/delete/
+Authorization: {{admin_token}}
+
+### Coupon Statistics (Admin)
+GET {{base_url}}/admin_panel/api/coupons/stats/
+Authorization: {{admin_token}}
+
+# =================== CUSTOMER COUPON APIS ===================
+
+### Validate Coupon (Customer)
+POST {{base_url}}/booking/validate-coupon/
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "coupon_code": "WELCOME10",
+    "order_amount": 1000
+}
+
+### Apply Coupon (Customer)
+POST {{base_url}}/booking/apply-coupon/
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "coupon_code": "SAVE20",
+    "subtotal": 1000
+}
+
+### Send Booking Request with Coupon (Customer)
+POST {{base_url}}/booking/send-booking-request/
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "id": "therapist-uuid-here",
+    "services": {
+        "massage": 1,
+        "deep_tissue": 1
+    },
+    "coupon_code": "WELCOME10",
+    "timeslot_from": "2024-01-15T10:00:00Z",
+    "timeslot_to": "2024-01-15T11:00:00Z",
+    "latitude": 12.9716,
+    "longitude": 77.5946,
+    "distance": 5.2
+}
+
+### Send Booking Request WITHOUT Coupon (Customer)
+POST {{base_url}}/booking/send-booking-request/
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "id": "therapist-uuid-here",
+    "services": {
+        "massage": 1
+    },
+    "timeslot_from": "2024-01-15T10:00:00Z",
+    "timeslot_to": "2024-01-15T11:00:00Z",
+    "latitude": 12.9716,
+    "longitude": 77.5946,
+    "distance": 5.2
+}
+
+### List Bookings with Coupon Info (Customer)
+GET {{base_url}}/booking/bookings/
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "customer": "customer-id-here"
+}
+
+# =================== SAMPLE CURL COMMANDS ===================
+
+### Create Coupon CURL (Admin)
+# curl -X POST https://spa.manishdashsharma.site/admin_panel/api/coupons/create/ \
+# -H "Authorization: admin-simple-token-2024" \
+# -H "Content-Type: application/json" \
+# -d '{
+#   "code": "SUMMER25",
+#   "name": "Summer Sale",
+#   "discount_type": "percentage",
+#   "discount_value": 25,
+#   "minimum_order_amount": 500,
+#   "is_active": true,
+#   "valid_from": "2024-06-01T00:00:00Z",
+#   "valid_until": "2024-08-31T23:59:59Z"
+# }'
+
+### Validate Coupon CURL (Customer)
+# curl -X POST https://spa.manishdashsharma.site/booking/validate-coupon/ \
+# -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+# -H "Content-Type: application/json" \
+# -d '{"coupon_code": "WELCOME10", "order_amount": 1000}'
+
+### List Coupons CURL (Admin)
+# curl -X GET "https://spa.manishdashsharma.site/admin_panel/api/coupons/?page=1&page_size=5" \
+# -H "Authorization: admin-simple-token-2024"
+
+# =================== EXAMPLE RESPONSES ===================
+
+### Successful Coupon Creation Response (Admin)
+# {
+#   "success": true,
+#   "message": "Coupon created successfully",
+#   "data": {
+#     "id": "f3ce88d3-27ad-4a93-a743-3ef2940b8ffb",
+#     "code": "WELCOME10",
+#     "name": "Welcome Discount",
+#     "description": "10% off for new customers",
+#     "discount_type": "percentage",
+#     "discount_value": "10.00",
+#     "minimum_order_amount": "0.00",
+#     "maximum_discount_amount": "100.00",
+#     "usage_limit": 1000,
+#     "used_count": 0,
+#     "is_active": true,
+#     "valid_from": "2024-01-01T00:00:00Z",
+#     "valid_until": "2024-12-31T23:59:59Z",
+#     "created_at": "2025-10-30T07:11:05.238093Z"
+#   }
+# }
+
+### Successful Coupon Validation Response (Customer)
+# {
+#   "success": true,
+#   "coupon": {
+#     "code": "WELCOME10",
+#     "name": "Welcome Discount",
+#     "description": "10% off for new customers",
+#     "discount_type": "percentage",
+#     "discount_value": 10
+#   },
+#   "original_amount": 1000,
+#   "discount_amount": 100,
+#   "final_total": 900
+# }
+
+### Coupon List Response (Admin)
+# {
+#   "success": true,
+#   "data": {
+#     "coupons": [
+#       {
+#         "id": "f3ce88d3-27ad-4a93-a743-3ef2940b8ffb",
+#         "code": "PREMIUM30",
+#         "name": "Premium 30% Off",
+#         "discount_type": "percentage",
+#         "discount_value": "30.00",
+#         "minimum_order_amount": "1500.00",
+#         "usage_limit": 25,
+#         "used_count": 0,
+#         "is_active": true,
+#         "valid_from": "2024-01-01T00:00:00Z",
+#         "valid_until": "2024-12-31T23:59:59Z"
+#       }
+#     ],
+#     "pagination": {
+#       "current_page": 1,
+#       "total_pages": 1,
+#       "total_count": 5,
+#       "has_next": false,
+#       "has_previous": false
+#     }
+#   }
+# }
+
+### Booking Response with Coupon Applied
+# {
+#   "id": "booking-uuid",
+#   "customer_id": "customer-uuid",
+#   "therapist_id": "therapist-uuid",
+#   "services": {"massage": 1},
+#   "subtotal": 1000,
+#   "coupon_discount": 100,
+#   "total": 900,
+#   "status": "active",
+#   "coupon_info": {
+#     "code": "WELCOME10",
+#     "name": "Welcome Discount",
+#     "discount_type": "percentage",
+#     "discount_value": 10
+#   },
+#   "customer_name": "John Doe",
+#   "therapist_name": "Jane Smith",
+#   "created_at": "2024-01-15T10:00:00Z"
+# }
+
+# =================== ERROR RESPONSES ===================
+
+### Invalid Coupon Response
+# {
+#   "success": false,
+#   "message": "Invalid coupon code."
+# }
+
+### Coupon Minimum Amount Error
+# {
+#   "success": false,
+#   "message": "Minimum order amount is ₹500"
+# }
+
+### Expired Coupon Error
+# {
+#   "success": false,
+#   "message": "This coupon is not valid or has expired."
+# }
+
+### Coupon Usage Limit Exceeded
+# {
+#   "success": false,
+#   "message": "This coupon has reached its usage limit."
+# }
+
+### Validation Errors (Admin)
+# {
+#   "success": false,
+#   "message": "Validation failed",
+#   "errors": {
+#     "code": ["A coupon with this code already exists."],
+#     "discount_value": ["Discount value must be greater than 0."]
+#   }
+# }
+
+# =================== AVAILABLE COUPONS (Created Examples) ===================
+
+### Current Active Coupons:
+# 1. WELCOME10 - 10% off (No minimum, Max ₹100 discount)
+# 2. SAVE20 - 20% off (Min ₹500, Max ₹300 discount)
+# 3. FLAT100 - ₹100 fixed off (Min ₹800)
+# 4. WEEKEND15 - 15% off (Min ₹300, Max ₹250 discount, Limited to 50 uses)
+# 5. PREMIUM30 - 30% off (Min ₹1500, Max ₹500 discount, Limited to 25 uses)
+
+# =================== COUPON RULES ===================
+
+### Discount Types:
+# - "percentage": Discount as percentage of order amount
+# - "fixed": Fixed amount discount in rupees
+
+### Key Fields:
+# - code: Unique coupon code (auto-converted to uppercase)
+# - minimum_order_amount: Minimum order value to apply coupon
+# - maximum_discount_amount: Maximum discount cap (for percentage coupons)
+# - usage_limit: Maximum number of times coupon can be used
+# - valid_from/valid_until: Coupon validity period
+# - is_active: Enable/disable coupon
+
+### Usage Flow:
+# 1. Admin creates coupon via admin API
+# 2. Customer validates coupon before booking
+# 3. Customer applies coupon during booking
+# 4. System calculates discount and updates booking
+# 5. Coupon usage count increments automatically
+
+# =================== NOTES ===================
+
+# 1. Admin Token: admin-simple-token-2024
+# 2. Customer APIs require JWT Bearer token from login
+# 3. All coupon codes are automatically converted to uppercase
+# 4. Coupons are optional - bookings work without them
+# 5. Invalid/expired coupons are ignored (no errors thrown)
+# 6. System tracks usage count and enforces limits
+# 7. Pagination available for coupon listing (page, page_size)
+# 8. Search and filter options available for admin
