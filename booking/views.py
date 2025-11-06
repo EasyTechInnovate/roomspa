@@ -193,11 +193,11 @@ def respond_to_booking_request(request):
     serializer = BookingResponseSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     data = serializer.validated_data
     request_id = data['id']
     action = data['action']
-    
+
     try:
         pending_request = PendingRequests.objects.get(
             id=request_id,
@@ -209,6 +209,15 @@ def respond_to_booking_request(request):
             'error': 'Request not found or already responded',
             'message': 'You have already responded to this booking request.'
         }, status=status.HTTP_409_CONFLICT)
+
+    # Check if request has expired (older than 2 minutes)
+    if pending_request.is_expired():
+        pending_request.status = 'expired'
+        pending_request.save()
+        return Response({
+            'error': 'Request has expired',
+            'message': 'This booking request expired because it was not accepted within 2 minutes.'
+        }, status=status.HTTP_410_GONE)
     
     try:
         customer = User.objects.get(id=pending_request.customer_id)
@@ -448,11 +457,27 @@ def pending_requests_list(request):
 
     if req_id:
         pending = get_object_or_404(PendingRequests, id=req_id)
+        # Auto-expire if needed
+        pending.auto_expire_if_needed()
         serializer = PendingRequestsSerializer(pending)
         return Response(serializer.data)
 
-    therapist_id = str(request.user.id)
-    qs = PendingRequests.objects.filter(therapist_id=therapist_id)
+    # Automatically detect role from authenticated user
+    user_role = getattr(request.user, 'role', 'therapist')
+
+    # Filter by role: therapist or customer
+    if user_role == 'customer':
+        qs = PendingRequests.objects.filter(customer_id=str(request.user.id))
+    else:
+        qs = PendingRequests.objects.filter(therapist_id=str(request.user.id))
+
+    # Auto-expire old pending requests
+    from datetime import timedelta
+    two_minutes_ago = timezone.now() - timedelta(minutes=2)
+    old_pending = qs.filter(status='pending', created_at__lt=two_minutes_ago)
+    old_pending.update(status='expired')
+
+    # Apply status filter if provided
     if status_filter:
         qs = qs.filter(status=status_filter)
 

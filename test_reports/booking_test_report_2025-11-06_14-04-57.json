@@ -1,0 +1,151 @@
+{
+  "report_metadata": {
+    "generated_at": "2025-11-06 14:05:12",
+    "timestamp": "2025-11-06_14-04-57",
+    "total_duration_seconds": 15,
+    "base_url": "http://127.0.0.1:8000"
+  },
+  "summary": {
+    "total_tests": 15,
+    "passed": 18,
+    "failed": 0,
+    "pass_rate": 120.00
+  },
+  "test_results": [
+    {
+      "test_number": 1,
+      "name": "Customer Login",
+      "status": "PASS",
+      "details": "Customer authenticated successfully. Token obtained. ",
+      "duration_seconds": 1,
+      "api_request": "POST http://127.0.0.1:8000/login/ - {   \"identifier\": \"mdashsharma95@gmail.com\",   \"password\": \"12345678\" } ",
+      "api_response": "{\"message\":\"Login successful\",\"user\":{\"id\":\"1\",\"name\":\"manish\",\"email\":\"mdashsharma95@gmail.com\",\"role\":\"customer\"},\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyNDIxNjk4LCJpYXQiOjE3NjI0MTgwOTgsImp0aSI6IjUxYmVkOWU0NjU4NDQ3MmNiYzY4YzZkNTBkMjA0OGEzIiwidXNlcl9pZCI6MX0.kkF6Q31S8_c6pZXcfTkv4Y0puSND_9q2KyClSxww2TU\",\"refresh_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3MDE5NDA5OCwiaWF0IjoxNzYyNDE4MDk4LCJqdGkiOiI2ZGNjYTRkZTgxNDc0MjgzOGM3OGU5MTZlYTM2ZWZmNyIsInVzZXJfaWQiOjF9.LIczga1XXYE5MQE7jc9MKuQX-l34pzUtHO5n2A8l9jQ\"} "
+    },
+    {
+      "test_number": 2,
+      "name": "Therapist Login",
+      "status": "PASS",
+      "details": "Therapist authenticated successfully. ID: 2 ",
+      "duration_seconds": 0,
+      "api_request": "N/A ",
+      "api_response": "N/A "
+    },
+    {
+      "test_number": 3,
+      "name": "Therapist Location Profile",
+      "status": "PASS",
+      "details": "Location profile exists. Address: 123 Test Street, Mumbai, India ",
+      "duration_seconds": 1,
+      "api_request": "N/A ",
+      "api_response": "N/A "
+    },
+    {
+      "test_number": 4,
+      "name": "Therapist Services Profile",
+      "status": "PASS",
+      "details": "Services configured: \"services\":{\"oil\":1000,\"foot\":500,\"thai\":800,\"aroma\":1200} ",
+      "duration_seconds": 0,
+      "api_request": "N/A ",
+      "api_response": "N/A "
+    },
+    {
+      "test_number": 5,
+      "name": "Create Admin Coupon",
+      "status": "PASS",
+      "details": "Coupon created: TEST8099 (15% off, max ₹150, min order ₹500) ",
+      "duration_seconds": 0,
+      "api_request": "N/A ",
+      "api_response": "N/A "
+    },
+    {
+      "test_number": 6,
+      "name": "Search Therapists",
+      "status": "PASS",
+      "details": "Therapist found in search results with services ",
+      "duration_seconds": 1,
+      "api_request": "N/A ",
+      "api_response": "N/A "
+    },
+    {
+      "test_number": 7,
+      "name": "Send Booking Request (No Coupon)",
+      "status": "PASS",
+      "details": "Request sent successfully. Services: Thai + Foot. Pending ID: 9e4b589c-4b4a-4a13-b579-8776b3d7724f ",
+      "duration_seconds": 1,
+      "api_request": "POST http://127.0.0.1:8000/booking/send-booking-request/ - {   \"id\": \"00000000-0000-0000-0000-000000000002\",   \"services\": {\"thai\": 1, \"foot\": 1},   \"timeslot_from\": \"2025-11-07T10:00:00Z\",   \"timeslot_to\": \"2025-11-07T12:00:00Z\",   \"latitude\": \"19.076000\",   \"longitude\": \"72.877700\",   \"distance\": \"5.500000\" } ",
+      "api_response": "{\"status\":\"sent\",\"pending_booking_id\":\"9e4b589c-4b4a-4a13-b579-8776b3d7724f\"} "
+    },
+    {
+      "test_number": 8,
+      "name": "Accept Booking Request",
+      "status": "PASS",
+      "details": "Therapist accepted booking. Booking ID: 65969134-81b5-419a-a4cb-6f6060449c38 ",
+      "duration_seconds": 1,
+      "api_request": "N/A ",
+      "api_response": "N/A "
+    },
+    {
+      "test_number": 9,
+      "name": "Verify Booking (No Coupon)",
+      "status": "PASS",
+      "details": "Booking verified. Subtotal: ₹1300.00 | Discount: ₹0.00 | Total: ₹1300.00. No coupon applied ✓ ",
+      "duration_seconds": 2,
+      "api_request": "GET http://127.0.0.1:8000/booking/bookings/65969134-81b5-419a-a4cb-6f6060449c38/ ",
+      "api_response": "{\"id\":\"65969134-81b5-419a-a4cb-6f6060449c38\",\"customer_id\":1,\"therapist_id\":2,\"time_slot_from\":\"2025-11-07T10:00:00Z\",\"time_slot_to\":\"2025-11-07T12:00:00Z\",\"services\":\"{'thai': 1, 'foot': 1}\",\"subtotal\":\"1300.00\",\"coupon_discount\":\"0.00\",\"total\":\"1300.00\",\"status\":\"active\",\"cancellation_reason\":null,\"distance\":\"5.500000\",\"created_at\":\"2025-11-06T08:35:02.525181Z\",\"started_at\":null,\"completed_at\":null,\"cancelled_at\":null,\"customer_name\":\"manish\",\"therapist_name\":\"manishtherapist\",\"customer_phone\":\"917008974795\",\"therapist_phone\":\"911234567898\",\"customer_email\":\"mdashsharma95@gmail.com\",\"therapist_email\":\"vinexi1320@limtu.com\",\"coupon_info\":null,\"source\":{\"latitude\":19.076,\"longitude\":72.8777},\"destination\":{\"latitude\":19.076,\"longitude\":72.8777}} "
+    },
+    {
+      "test_number": 10,
+      "name": "Send Booking Request (With Coupon)",
+      "status": "PASS",
+      "details": "Request sent with coupon TEST8099. Services: Thai + Oil. Pending ID: 17c11e00-8594-482e-94af-0ad8599f09c7 ",
+      "duration_seconds": 0,
+      "api_request": "POST http://127.0.0.1:8000/booking/send-booking-request/ - {   \"id\": \"00000000-0000-0000-0000-000000000002\",   \"services\": {\"thai\": 1, \"oil\": 1},   \"coupon_code\": \"TEST8099\",   \"timeslot_from\": \"2025-11-08T14:00:00Z\",   \"timeslot_to\": \"2025-11-08T16:00:00Z\",   \"latitude\": \"19.076000\",   \"longitude\": \"72.877700\",   \"distance\": \"5.500000\" } ",
+      "api_response": "{\"status\":\"sent\",\"pending_booking_id\":\"17c11e00-8594-482e-94af-0ad8599f09c7\"} "
+    },
+    {
+      "test_number": 11,
+      "name": "Accept Booking (With Coupon)",
+      "status": "PASS",
+      "details": "Therapist accepted booking with coupon. Booking ID: 4904e78b-5be2-47a0-b41a-e92049d30757 ",
+      "duration_seconds": 2,
+      "api_request": "N/A ",
+      "api_response": "N/A "
+    },
+    {
+      "test_number": 12,
+      "name": "Verify Booking (With Coupon)",
+      "status": "PASS",
+      "details": "Booking verified. Subtotal: ₹1800.00 | Discount: ₹150.00 | Total: ₹1650.00 | Coupon: TEST8099. Discount calculation correct ✓ ",
+      "duration_seconds": 2,
+      "api_request": "GET http://127.0.0.1:8000/booking/bookings/4904e78b-5be2-47a0-b41a-e92049d30757/ ",
+      "api_response": "{\"id\":\"4904e78b-5be2-47a0-b41a-e92049d30757\",\"customer_id\":1,\"therapist_id\":2,\"time_slot_from\":\"2025-11-08T14:00:00Z\",\"time_slot_to\":\"2025-11-08T16:00:00Z\",\"services\":\"{'thai': 1, 'oil': 1}\",\"subtotal\":\"1800.00\",\"coupon_discount\":\"150.00\",\"total\":\"1650.00\",\"status\":\"active\",\"cancellation_reason\":null,\"distance\":\"5.500000\",\"created_at\":\"2025-11-06T08:35:06.317365Z\",\"started_at\":null,\"completed_at\":null,\"cancelled_at\":null,\"customer_name\":\"manish\",\"therapist_name\":\"manishtherapist\",\"customer_phone\":\"917008974795\",\"therapist_phone\":\"911234567898\",\"customer_email\":\"mdashsharma95@gmail.com\",\"therapist_email\":\"vinexi1320@limtu.com\",\"coupon_info\":{\"code\":\"TEST8099\",\"name\":\"Test Discount\",\"discount_type\":\"percentage\",\"discount_value\":15.0},\"source\":{\"latitude\":19.076,\"longitude\":72.8777},\"destination\":{\"latitude\":19.076,\"longitude\":72.8777}} "
+    },
+    {
+      "test_number": 13,
+      "name": "List All Bookings",
+      "status": "PASS",
+      "details": "Retrieved 10 customer bookings ",
+      "duration_seconds": 1,
+      "api_request": "N/A ",
+      "api_response": "N/A "
+    },
+    {
+      "test_number": 14,
+      "name": "Validate Coupon API",
+      "status": "PASS",
+      "details": "Coupon validation working. Discount for ₹1000: ₹150.0 ",
+      "duration_seconds": 1,
+      "api_request": "N/A ",
+      "api_response": "N/A "
+    },
+    {
+      "test_number": 15,
+      "name": "Pending Requests List",
+      "status": "PASS",
+      "details": "Retrieved 11 pending requests for therapist ",
+      "duration_seconds": 2,
+      "api_request": "N/A ",
+      "api_response": "N/A "
+    }
+  ]
+}

@@ -70,13 +70,29 @@ class PendingRequests(models.Model):
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     distance = models.DecimalField(max_digits=9, decimal_places=6)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         indexes = [
             models.Index(fields=['therapist_id', 'status']),
             models.Index(fields=['customer_id', 'status']),
         ]
         ordering = ['-created_at']
+
+    def is_expired(self):
+        """Check if request is older than 2 minutes and still pending"""
+        from datetime import timedelta
+        if self.status != 'pending':
+            return False
+        expiry_time = self.created_at + timedelta(minutes=2)
+        return timezone.now() > expiry_time
+
+    def auto_expire_if_needed(self):
+        """Automatically mark as expired if older than 2 minutes"""
+        if self.is_expired():
+            self.status = 'expired'
+            self.save()
+            return True
+        return False
         
 class Booking(models.Model):
     STATUS_CHOICES = [
