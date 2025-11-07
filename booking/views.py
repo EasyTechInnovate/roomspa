@@ -73,10 +73,18 @@ def search_therapists_view(request):
                 if not has_matching_service:
                     continue
             
+            # Get profile picture
+            profile_picture = None
+            try:
+                profile_picture = therapist.therapist_pictures.profile_picture
+            except:
+                pass
+
             data = {
                 'id': therapist.id,
-                'name': therapist.name, 
+                'name': therapist.name,
                 'email': therapist.email,
+                'profile_picture': profile_picture,
                 'address': {
                     'address':addr.address,
                     'coordinates':{

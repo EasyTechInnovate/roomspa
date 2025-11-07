@@ -5,11 +5,13 @@ from therapist.models import Services as TherapistAddress
 class PendingRequestsSerializer(serializers.ModelSerializer):
     services_with_pricing = serializers.SerializerMethodField()
     total_amount = serializers.SerializerMethodField()
+    customer_profile_picture = serializers.SerializerMethodField()
+    therapist_profile_picture = serializers.SerializerMethodField()
 
     class Meta:
         model = PendingRequests
-        fields = [ 'id', 'customer_id', 'therapist_id', 'status', 'customer_name', 'services', 'services_with_pricing', 'total_amount', 'timeslot_from', 'timeslot_to', 'latitude', 'longitude', 'distance', 'created_at']
-        read_only_fields = ['id', 'created_at', 'services_with_pricing', 'total_amount']
+        fields = [ 'id', 'customer_id', 'therapist_id', 'status', 'customer_name', 'services', 'services_with_pricing', 'total_amount', 'timeslot_from', 'timeslot_to', 'latitude', 'longitude', 'distance', 'customer_profile_picture', 'therapist_profile_picture', 'created_at']
+        read_only_fields = ['id', 'created_at', 'services_with_pricing', 'total_amount', 'customer_profile_picture', 'therapist_profile_picture']
 
     def get_services_with_pricing(self, obj):
         try:
@@ -66,6 +68,24 @@ class PendingRequestsSerializer(serializers.ModelSerializer):
         total = sum(service['total_price'] for service in services_pricing)
         return float(total)
 
+    def get_customer_profile_picture(self, obj):
+        try:
+            from django.contrib.auth import get_user_model
+            User = get_user_model()
+            customer = User.objects.get(id=obj.customer_id)
+            return customer.therapist_pictures.profile_picture
+        except:
+            return None
+
+    def get_therapist_profile_picture(self, obj):
+        try:
+            from django.contrib.auth import get_user_model
+            User = get_user_model()
+            therapist = User.objects.get(id=obj.therapist_id)
+            return therapist.therapist_pictures.profile_picture
+        except:
+            return None
+
 class FCMTokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = FCMToken
@@ -96,6 +116,8 @@ class BookingSerializer(serializers.ModelSerializer):
     therapist_phone = serializers.SerializerMethodField()
     customer_email = serializers.SerializerMethodField()
     therapist_email = serializers.SerializerMethodField()
+    customer_profile_picture = serializers.SerializerMethodField()
+    therapist_profile_picture = serializers.SerializerMethodField()
     coupon_info = serializers.SerializerMethodField()
 
     class Meta:
@@ -106,12 +128,12 @@ class BookingSerializer(serializers.ModelSerializer):
             'cancellation_reason', 'distance',
             'created_at', 'started_at', 'completed_at', 'cancelled_at',
             'customer_name', 'therapist_name', 'customer_phone', 'therapist_phone',
-            'customer_email', 'therapist_email', 'coupon_info',
-            'source', 'destination'
+            'customer_email', 'therapist_email', 'customer_profile_picture', 'therapist_profile_picture',
+            'coupon_info', 'source', 'destination'
         ]
         read_only_fields = ['id', 'created_at', 'source', 'destination', 'customer_name', 'therapist_name',
                            'customer_id', 'therapist_id', 'customer_phone', 'therapist_phone',
-                           'customer_email', 'therapist_email']
+                           'customer_email', 'therapist_email', 'customer_profile_picture', 'therapist_profile_picture']
 
     def get_source(self, obj):
         try:
@@ -151,6 +173,22 @@ class BookingSerializer(serializers.ModelSerializer):
 
     def get_therapist_email(self, obj):
         return obj.therapist.email if obj.therapist else None
+
+    def get_customer_profile_picture(self, obj):
+        if obj.customer:
+            try:
+                return obj.customer.therapist_pictures.profile_picture
+            except:
+                return None
+        return None
+
+    def get_therapist_profile_picture(self, obj):
+        if obj.therapist:
+            try:
+                return obj.therapist.therapist_pictures.profile_picture
+            except:
+                return None
+        return None
 
     def get_coupon_info(self, obj):
         if obj.coupon:
