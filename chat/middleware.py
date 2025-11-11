@@ -16,17 +16,26 @@ class JWTAuthMiddleware(BaseMiddleware):
 
     async def __call__(self, scope, receive, send):
         try:
+            logger.info(f"[JWTAuthMiddleware] Processing connection for path: {scope.get('path', 'unknown')}")
             token = self.get_token_from_scope(scope)
+
             if token:
+                logger.info(f"[JWTAuthMiddleware] Token found: {token[:20]}...")
                 user = await self.get_user_from_token(token)
                 if user:
+                    logger.info(f"[JWTAuthMiddleware] User authenticated: {user.id} ({user.email})")
                     scope['user'] = user
                     return await self.inner(scope, receive, send)
-            
+                else:
+                    logger.warning(f"[JWTAuthMiddleware] Invalid token - user not found")
+            else:
+                logger.warning(f"[JWTAuthMiddleware] No token provided")
+
+            logger.info(f"[JWTAuthMiddleware] Setting AnonymousUser")
             scope['user'] = AnonymousUser()
             return await self.inner(scope, receive, send)
         except Exception as e:
-            logger.error(f"JWT Auth error: {e}")
+            logger.error(f"[JWTAuthMiddleware] JWT Auth error: {e}", exc_info=True)
             scope['user'] = AnonymousUser()
             return await self.inner(scope, receive, send)
 
@@ -48,11 +57,25 @@ class JWTAuthMiddleware(BaseMiddleware):
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
             user_id = payload.get('user_id')
-            
+
+            logger.info(f"[JWTAuthMiddleware] Decoded token payload, user_id: {user_id}")
+
             if not user_id:
+                logger.warning(f"[JWTAuthMiddleware] No user_id in token payload")
                 return None
-                
+
             user = User.objects.get(id=user_id)
+            logger.info(f"[JWTAuthMiddleware] User found: {user.id} - {user.email} (role: {user.role})")
             return user
-        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, User.DoesNotExist):
+        except jwt.ExpiredSignatureError:
+            logger.warning(f"[JWTAuthMiddleware] Token expired")
+            return None
+        except jwt.InvalidTokenError as e:
+            logger.warning(f"[JWTAuthMiddleware] Invalid token: {e}")
+            return None
+        except User.DoesNotExist:
+            logger.warning(f"[JWTAuthMiddleware] User {user_id} does not exist")
+            return None
+        except Exception as e:
+            logger.error(f"[JWTAuthMiddleware] Unexpected error: {e}", exc_info=True)
             return None
