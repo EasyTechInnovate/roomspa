@@ -1,7 +1,7 @@
 # RoomSpa Coupon System API Documentation
 # =============================================
 
-@base_url = https://spa.manishdashsharma.site
+@base_url = https://api.roomspa.org
 @admin_token = admin-simple-token-2024
 @access_token = YOUR_ACCESS_TOKEN_HERE
 
@@ -177,7 +177,7 @@ Content-Type: application/json
 # =================== SAMPLE CURL COMMANDS ===================
 
 ### Create Coupon CURL (Admin)
-# curl -X POST https://spa.manishdashsharma.site/admin_panel/api/coupons/create/ \
+# curl -X POST https://api.roomspa.org/admin_panel/api/coupons/create/ \
 # -H "Authorization: admin-simple-token-2024" \
 # -H "Content-Type: application/json" \
 # -d '{
@@ -192,13 +192,13 @@ Content-Type: application/json
 # }'
 
 ### Validate Coupon CURL (Customer)
-# curl -X POST https://spa.manishdashsharma.site/booking/validate-coupon/ \
+# curl -X POST https://api.roomspa.org/booking/validate-coupon/ \
 # -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
 # -H "Content-Type: application/json" \
 # -d '{"coupon_code": "WELCOME10", "order_amount": 1000}'
 
 ### List Coupons CURL (Admin)
-# curl -X GET "https://spa.manishdashsharma.site/admin_panel/api/coupons/?page=1&page_size=5" \
+# curl -X GET "https://api.roomspa.org/admin_panel/api/coupons/?page=1&page_size=5" \
 # -H "Authorization: admin-simple-token-2024"
 
 # =================== EXAMPLE RESPONSES ===================

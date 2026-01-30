@@ -67,10 +67,10 @@ jobs:
 
             # SSL Certificate Setup with Certbot (after stopping containers)
             echo '🔒 Checking/Updating SSL certificates...'
-            certbot certonly --standalone -d spa.manishdashsharma.site --non-interactive --agree-tos -m roomsparevo@gmail.com || { 
+            certbot certonly --standalone -d api.roomspa.org --non-interactive --agree-tos -m roomsparevo@gmail.com || { 
               echo '⚠️ Certbot failed, trying webroot method...'
               # Alternative: Use webroot method if standalone fails
-              certbot certonly --webroot -w /var/www/html -d spa.manishdashsharma.site --non-interactive --agree-tos -m roomsparevo@gmail.com || {
+              certbot certonly --webroot -w /var/www/html -d api.roomspa.org --non-interactive --agree-tos -m roomsparevo@gmail.com || {
                 echo '⚠️ SSL certificate update failed, continuing with existing certificates...'
               }
             }

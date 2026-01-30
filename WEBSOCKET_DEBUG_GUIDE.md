@@ -116,7 +116,7 @@ node websocket-diagnostic.js <jwt_token>
 
 ### 3. Get fresh token
 ```bash
-curl -X POST https://spa.manishdashsharma.site/login/ \
+curl -X POST https://api.roomspa.org/login/ \
   -H "Content-Type: application/json" \
   -d '{"identifier":"mdashsharma95@gmail.com","password":"12345678"}' \
   | jq -r '.access_token'
@@ -224,9 +224,9 @@ Once you deploy with logging and find the issue:
 
 **Test Endpoints:**
 ```
-wss://spa.manishdashsharma.site/ws/test/
-wss://spa.manishdashsharma.site/ws/chat/{customer_id}/{therapist_id}/?token={jwt}
-wss://spa.manishdashsharma.site/ws/location/{customer_id}/{therapist_id}/?token={jwt}
+wss://api.roomspa.org/ws/test/
+wss://api.roomspa.org/ws/chat/{customer_id}/{therapist_id}/?token={jwt}
+wss://api.roomspa.org/ws/location/{customer_id}/{therapist_id}/?token={jwt}
 ```
 
 **Error Codes:**

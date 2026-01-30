@@ -14,7 +14,7 @@
 # ✅ Updated sample responses to match actual API responses
 
 # Variables
-@baseUrl = https://spa.manishdashsharma.site/admin_panel
+@baseUrl = https://api.roomspa.org/admin_panel
 @token = admin-simple-token-2024
 
 # =================== AUTHENTICATION APIs ===================
