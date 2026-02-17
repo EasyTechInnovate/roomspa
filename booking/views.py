@@ -161,6 +161,40 @@ def send_booking_request(request):
             status=status.HTTP_200_OK
         )
 
+    # Check if therapist already has an active/started booking during this time
+    conflicting_booking = Booking.objects.filter(
+        therapist_id=therapist_id,
+        status__in=['active', 'started'],
+        time_slot_from__lt=timeslot_to,
+        time_slot_to__gt=timeslot_from
+    ).exists()
+
+    if conflicting_booking:
+        return Response(
+            {
+                'error': 'Therapist unavailable',
+                'message': 'This therapist is already booked during the requested time slot.'
+            },
+            status=status.HTTP_409_CONFLICT
+        )
+
+    # Check if therapist already has a pending request during this time
+    conflicting_pending = PendingRequests.objects.filter(
+        therapist_id=therapist_id,
+        status='pending',
+        timeslot_from__lt=timeslot_to,
+        timeslot_to__gt=timeslot_from
+    ).exists()
+
+    if conflicting_pending:
+        return Response(
+            {
+                'error': 'Therapist unavailable',
+                'message': 'This therapist already has a pending request during the requested time slot.'
+            },
+            status=status.HTTP_409_CONFLICT
+        )
+
     pending = PendingRequests.objects.create(
         customer_id=customer_id,
         therapist_id=therapist_id,
@@ -255,6 +289,35 @@ def respond_to_booking_request(request):
         }, status=status.HTTP_200_OK)
     
     elif action == 'accept':
+        # Check for overlapping active/started bookings before accepting
+        conflicting_booking = Booking.objects.filter(
+            therapist=request.user,
+            status__in=['active', 'started'],
+            time_slot_from__lt=pending_request.timeslot_to,
+            time_slot_to__gt=pending_request.timeslot_from
+        ).exists()
+
+        if conflicting_booking:
+            pending_request.status = 'rejected'
+            pending_request.save()
+
+            try:
+                fcm_token = FCMToken.objects.get(user=customer)
+                send_push_notification(
+                    fcm_token.token,
+                    "Booking Request Declined",
+                    "Your therapist is already booked during this time slot",
+                    {"type": "booking_rejected", "request_id": str(pending_request.id)}
+                )
+            except FCMToken.DoesNotExist:
+                pass
+
+            return Response({
+                'accepted': False,
+                'error': 'Time slot conflict',
+                'message': 'You already have a booking during this time slot.'
+            }, status=status.HTTP_409_CONFLICT)
+
         # Calculate actual total from therapist's service prices
         total_amount = Decimal('0.00')
         try:
