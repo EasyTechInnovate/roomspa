@@ -178,16 +178,37 @@ def send_booking_request(request):
             status=status.HTTP_409_CONFLICT
         )
 
-    # Check if therapist already has a non-expired pending request during this time
     from datetime import timedelta
     two_minutes_ago = timezone.now() - timedelta(minutes=2)
+
+    # Check if THIS customer already has a pending request to this therapist in this time slot
+    own_pending = PendingRequests.objects.filter(
+        customer_id=customer_id,
+        therapist_id=therapist_id,
+        status='pending',
+        created_at__gt=two_minutes_ago,
+        timeslot_from__lt=timeslot_to,
+        timeslot_to__gt=timeslot_from
+    ).first()
+
+    if own_pending:
+        return Response(
+            {
+                'status': 'already_exists',
+                'pending_booking_id': str(own_pending.id),
+                'message': 'You already have a pending request for this therapist during this time.'
+            },
+            status=status.HTTP_200_OK
+        )
+
+    # Check if a DIFFERENT customer already has a non-expired pending request during this time
     conflicting_pending = PendingRequests.objects.filter(
         therapist_id=therapist_id,
         status='pending',
         created_at__gt=two_minutes_ago,
         timeslot_from__lt=timeslot_to,
         timeslot_to__gt=timeslot_from
-    ).exists()
+    ).exclude(customer_id=customer_id).exists()
 
     if conflicting_pending:
         return Response(
