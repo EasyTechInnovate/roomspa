@@ -178,10 +178,13 @@ def send_booking_request(request):
             status=status.HTTP_409_CONFLICT
         )
 
-    # Check if therapist already has a pending request during this time
+    # Check if therapist already has a non-expired pending request during this time
+    from datetime import timedelta
+    two_minutes_ago = timezone.now() - timedelta(minutes=2)
     conflicting_pending = PendingRequests.objects.filter(
         therapist_id=therapist_id,
         status='pending',
+        created_at__gt=two_minutes_ago,
         timeslot_from__lt=timeslot_to,
         timeslot_to__gt=timeslot_from
     ).exists()
@@ -240,11 +243,13 @@ def respond_to_booking_request(request):
     request_id = data['id']
     action = data['action']
 
+    # For reject, also allow acting on already-expired requests so therapist can clear notifications
+    allowed_statuses = ['pending', 'expired'] if action == 'reject' else ['pending']
     try:
         pending_request = PendingRequests.objects.get(
             id=request_id,
             therapist_id=request.user.id,
-            status='pending'
+            status__in=allowed_statuses
         )
     except PendingRequests.DoesNotExist:
         return Response({
@@ -252,8 +257,8 @@ def respond_to_booking_request(request):
             'message': 'You have already responded to this booking request.'
         }, status=status.HTTP_409_CONFLICT)
 
-    # Check if request has expired (older than 2 minutes)
-    if pending_request.is_expired():
+    # Check if request has expired (older than 2 minutes) — only block accept, not reject
+    if action != 'reject' and pending_request.is_expired():
         pending_request.status = 'expired'
         pending_request.save()
         return Response({
@@ -513,7 +518,7 @@ def pending_requests_list(request):
             id=req_id,
             therapist_id=request.user.id
         )
-        if pending.status != 'pending':
+        if pending.status not in ['pending', 'expired']:
             return Response(
                 {'error': 'Only pending requests can be cancelled'},
                 status=status.HTTP_400_BAD_REQUEST
